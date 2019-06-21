@@ -5,6 +5,8 @@
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro_audio.h>
 #include <allegro5/allegro_acodec.h>
+#include <allegro5/allegro_font.h>
+#include <allegro5/allegro_ttf.h>
 
 //variaveis globais
 const float FPS = 50; //numero de quadros por segundo, a ser carregado no temporizador (altere esse valor e veja o que acontece)
@@ -16,6 +18,8 @@ int random(int min, int max) {
 }
 
 int main(int argc, char **argv){
+    int score = 50;
+
     srand(time(NULL));
     //tela
     ALLEGRO_DISPLAY *display = NULL;
@@ -95,6 +99,15 @@ int main(int argc, char **argv){
     // Teclado
     al_install_keyboard();
 
+// ---------- fontes
+    //inicializa o modulo allegro que carrega as fontes
+    al_init_font_addon();
+	//inicializa o modulo allegro que entende arquivos tff de fontes
+    al_init_ttf_addon();
+
+	//carrega o arquivo arial.ttf da fonte Arial e define que sera usado o tamanho 32 (segundo parametro)
+    ALLEGRO_FONT *size_32 = al_load_font("arial.ttf", 32, 1);   	
+
 
     // ----------- Nota 1
     nota1 = al_load_bitmap("nota1.png");
@@ -159,8 +172,7 @@ int main(int argc, char **argv){
     al_start_timer(timer);
 
     //enquanto a posicao x do passaro for menor que a largura da tela
-    while(1==1)
-    {
+    while(score > -100) {
         //variavel do tipo evento
         ALLEGRO_EVENT ev;
         //a variavel ev recebe o primeiro evento da fila de eventos
@@ -173,29 +185,41 @@ int main(int argc, char **argv){
                     if(bird_y >= 500 && bird_y <= 600) {
                         printf("\a");
                         bird_y = random(50, 500) * -1;
+                        score += 5;
                     }
+                    else score -= 10;
                     break;
 
                 case ALLEGRO_KEY_W:
                     if(nota2_y >= 500 && nota2_y <= 600) {
                         printf("\a");
                         nota2_y = random(50, 500) * -1;
+                        score += 5;                        
                     }
+                    else score -= 10;
                     break;
                 case ALLEGRO_KEY_O:
                     if(nota3_y >= 500 && nota3_y <= 600) {
                         printf("\a");
                         nota3_y = random(50, 500) * -1;
+                        score += 5;                        
                     }
+                    else score -= 10;
                     break;
                 case ALLEGRO_KEY_P:    
                     if(nota4_y >= 500 && nota4_y <= 600) {
                         printf("\a");
                         nota4_y = random(50, 500) * -1;
+                        score += 5;
                     }
+                    else score -= 10;
                     break;
             }
         }
+
+
+
+    
         
         if(ev.type == ALLEGRO_EVENT_TIMER) {
  
@@ -248,6 +272,11 @@ int main(int argc, char **argv){
             al_draw_bitmap(nota3, nota3_x, nota3_y, 0);
             al_draw_bitmap(nota4, nota4_x, nota4_y, 0);
             //dou um refresh na tela
+
+            char my_text[20];
+            //colore toda a tela de preto
+            sprintf(my_text, "Score: %d", score);
+            al_draw_text(size_32, al_map_rgb(200, 0, 30), 50, SCREEN_H/2, 0, my_text);
             al_flip_display();
         }
     } //fim while
