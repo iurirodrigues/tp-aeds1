@@ -26,6 +26,8 @@ int main(int argc, char **argv){
     // Notas musicais
     ALLEGRO_BITMAP *nota1 = NULL;
     ALLEGRO_BITMAP *nota2 = NULL;
+    ALLEGRO_BITMAP *nota3 = NULL;
+    ALLEGRO_BITMAP *nota4 = NULL;
     
     //variavel que indica se eh para redesenhar o passaro
     bool redraw = true;
@@ -112,10 +114,23 @@ int main(int argc, char **argv){
 
     //variacao de x e y ao longo do tempo
     float bird_dx = 0.0, bird_dy = 5.0;
-    
+
+
+    // -- nota 2
     nota2 = al_load_bitmap("nota2.png");
     float nota2_x = SCREEN_W / 2.0 - 50 - 10;
     float nota2_y = random(50, 500) * -1;
+
+    // -- nota 3
+    nota3 = al_load_bitmap("nota3.png");
+    float nota3_x = SCREEN_W / 2.0 + 7;
+    float nota3_y = random(50, 500) * -1;
+
+    // -- nota 4
+    nota4 = al_load_bitmap("nota4.png");
+    float nota4_x = SCREEN_W / 2.0 + 76;
+    float nota4_y = random(50, 500) * -1;
+
 
     //criar a fila de eventos
     event_queue = al_create_event_queue();
@@ -168,8 +183,16 @@ int main(int argc, char **argv){
                     }
                     break;
                 case ALLEGRO_KEY_O:
+                    if(nota3_y >= 500 && nota3_y <= 600) {
+                        printf("\a");
+                        nota3_y = random(50, 500) * -1;
+                    }
                     break;
                 case ALLEGRO_KEY_P:    
+                    if(nota4_y >= 500 && nota4_y <= 600) {
+                        printf("\a");
+                        nota4_y = random(50, 500) * -1;
+                    }
                     break;
             }
         }
@@ -183,12 +206,24 @@ int main(int argc, char **argv){
 
             nota2_x += bird_dx;
             nota2_y += bird_dy;
+
+            nota3_x += bird_dx;
+            nota3_y += bird_dy;
+
+            nota4_x += bird_dx;
+            nota4_y += bird_dy;
             
             if(bird_y >= 600) {
                 bird_y = random(50, 500) * -1;
             }
             if(nota2_y >= 600) {
                 nota2_y = random(50, 500) * -1;
+            }
+            if(nota3_y >= 600) {
+                nota3_y = random(50, 500) * -1;
+            }
+            if(nota4_y >= 600) {
+                nota4_y = random(50, 500) * -1;
             }
             
             //como eu movi o passaro, preciso redesenhar ele (remova essa linha e veja o que acontece)
@@ -210,6 +245,8 @@ int main(int argc, char **argv){
             //desenho o passaro na nova posicao
             al_draw_bitmap(nota1, bird_x, bird_y, 0);
             al_draw_bitmap(nota2, nota2_x, nota2_y, 0);
+            al_draw_bitmap(nota3, nota3_x, nota3_y, 0);
+            al_draw_bitmap(nota4, nota4_x, nota4_y, 0);
             //dou um refresh na tela
             al_flip_display();
         }
