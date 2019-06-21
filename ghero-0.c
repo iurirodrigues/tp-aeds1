@@ -101,12 +101,15 @@ int main(int argc, char **argv){
     float largura_passaro =  al_get_bitmap_width(nota1);
     float altura_passaro =  al_get_bitmap_height(nota1);
     //posicao x e y inicial do passaro na tela
-    float bird_x = SCREEN_W / 2.0 + 7.0;
+    float bird_x = SCREEN_W / 2.0 - 50 - 19 - 50 - 7;
     float bird_y = -50;
 
     //variacao de x e y ao longo do tempo
     float bird_dx = 0.0, bird_dy = 5.0;
     
+    nota2 = al_load_bitmap("nota2.png");
+    float nota2_x = SCREEN_W / 2.0 - 50 - 10;
+    float nota2_y = -50;
 
     //criar a fila de eventos
     event_queue = al_create_event_queue();
@@ -152,12 +155,15 @@ int main(int argc, char **argv){
                     }
                     break;
 
-                case ALLEGRO_KEY_S:
-
+                case ALLEGRO_KEY_W:
+                    if(nota2_y >= 500 && nota2_y <= 600) {
+                        printf("\a");
+                        nota2_y = -50;
+                    }
                     break;
-                case ALLEGRO_KEY_J:
+                case ALLEGRO_KEY_O:
                     break;
-                case ALLEGRO_KEY_K:    
+                case ALLEGRO_KEY_P:    
                     break;
             }
         }
@@ -168,9 +174,15 @@ int main(int argc, char **argv){
             //incrementa as posicoes x e y do passaro com o seu deslocamento dx e dy
             bird_x += bird_dx;
             bird_y += bird_dy;
+
+            nota2_x += bird_dx;
+            nota2_y += bird_dy;
             
             if(bird_y >= 600) {
                 bird_y = rand()%500 * -1;
+            }
+            if(nota2_y >= 600) {
+                nota2_y = rand()%500 * -1;
             }
             
             //como eu movi o passaro, preciso redesenhar ele (remova essa linha e veja o que acontece)
@@ -191,6 +203,7 @@ int main(int argc, char **argv){
             al_draw_bitmap(imagem, 0, 0, 0);    
             //desenho o passaro na nova posicao
             al_draw_bitmap(nota1, bird_x, bird_y, 0);
+            al_draw_bitmap(nota2, nota2_x, nota2_y, 0);
             //dou um refresh na tela
             al_flip_display();
         }
