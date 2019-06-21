@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro_audio.h>
@@ -10,8 +11,12 @@ const float FPS = 50; //numero de quadros por segundo, a ser carregado no tempor
 const int SCREEN_W = 800;  //largura da tela
 const int SCREEN_H = 600;  //altura da tela
 
-int main(int argc, char **argv){
+int random(int min, int max) {
+    return min + rand()%(max+1-min);
+}
 
+int main(int argc, char **argv){
+    srand(time(NULL));
     //tela
     ALLEGRO_DISPLAY *display = NULL;
     //fila de eventos detectados pelo Allegro (ex: tecla que foi apertada, clique do mouse etc)
@@ -21,6 +26,7 @@ int main(int argc, char **argv){
     // Notas musicais
     ALLEGRO_BITMAP *nota1 = NULL;
     ALLEGRO_BITMAP *nota2 = NULL;
+    
     //variavel que indica se eh para redesenhar o passaro
     bool redraw = true;
     ALLEGRO_BITMAP *imagem = NULL;
@@ -102,14 +108,14 @@ int main(int argc, char **argv){
     float altura_passaro =  al_get_bitmap_height(nota1);
     //posicao x e y inicial do passaro na tela
     float bird_x = SCREEN_W / 2.0 - 50 - 19 - 50 - 7;
-    float bird_y = -50;
+    float bird_y = random(50, 500) * -1;
 
     //variacao de x e y ao longo do tempo
     float bird_dx = 0.0, bird_dy = 5.0;
     
     nota2 = al_load_bitmap("nota2.png");
     float nota2_x = SCREEN_W / 2.0 - 50 - 10;
-    float nota2_y = -50;
+    float nota2_y = random(50, 500) * -1;
 
     //criar a fila de eventos
     event_queue = al_create_event_queue();
@@ -151,14 +157,14 @@ int main(int argc, char **argv){
                 case ALLEGRO_KEY_Q:
                     if(bird_y >= 500 && bird_y <= 600) {
                         printf("\a");
-                        bird_y = -50;
+                        bird_y = random(50, 500) * -1;
                     }
                     break;
 
                 case ALLEGRO_KEY_W:
                     if(nota2_y >= 500 && nota2_y <= 600) {
                         printf("\a");
-                        nota2_y = -50;
+                        nota2_y = random(50, 500) * -1;
                     }
                     break;
                 case ALLEGRO_KEY_O:
@@ -179,10 +185,10 @@ int main(int argc, char **argv){
             nota2_y += bird_dy;
             
             if(bird_y >= 600) {
-                bird_y = rand()%500 * -1;
+                bird_y = random(50, 500) * -1;
             }
             if(nota2_y >= 600) {
-                nota2_y = rand()%500 * -1;
+                nota2_y = random(50, 500) * -1;
             }
             
             //como eu movi o passaro, preciso redesenhar ele (remova essa linha e veja o que acontece)
