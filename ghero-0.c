@@ -37,10 +37,8 @@ int main(int argc, char **argv){
     bool redraw = true;
     ALLEGRO_BITMAP *imagem = NULL;
     ALLEGRO_SAMPLE *sample = NULL;
-
-
+ 
     //------------------------------ rotinas de inicializacao -------------------------
-
 
 	//inicializa o allegro. Se nao conseguir, imprime na tela uma msg de erro.
     if(!al_init()) {
@@ -172,13 +170,30 @@ int main(int argc, char **argv){
     al_start_timer(timer);
 
     //enquanto a posicao x do passaro for menor que a largura da tela
-    while(score > -100) {
+    while(score > -100 || al_play_sample(sample, 1.0, 0.0,1.0,ALLEGRO_PLAYMODE_ONCE,NULL)) {
         //variavel do tipo evento
         ALLEGRO_EVENT ev;
         //a variavel ev recebe o primeiro evento da fila de eventos
         al_wait_for_event(event_queue, &ev);
         //se for um evento de timer, ou seja, se foi o tempo que passou de t para t+1
         
+        if(bird_y > 600) {
+            bird_y = random(50, 500) * -1;
+            score -= 10;
+        }
+        if(nota2_y > 600) {
+            nota2_y = random(50, 500) * -1;
+            score -= 10;
+        }
+        if(nota3_y > 600) {
+            nota3_y = random(50, 500) * -1;
+            score -= 10;
+        }
+        if(nota4_y > 600) {
+            nota4_y = random(50, 500) * -1;
+            score -= 10;
+        }
+
         if(ev.type == ALLEGRO_EVENT_KEY_DOWN){
             switch(ev.keyboard.keycode){
                 case ALLEGRO_KEY_Q:
@@ -216,10 +231,6 @@ int main(int argc, char **argv){
                     break;
             }
         }
-
-
-
-    
         
         if(ev.type == ALLEGRO_EVENT_TIMER) {
  
@@ -237,18 +248,7 @@ int main(int argc, char **argv){
             nota4_x += bird_dx;
             nota4_y += bird_dy;
             
-            if(bird_y >= 600) {
-                bird_y = random(50, 500) * -1;
-            }
-            if(nota2_y >= 600) {
-                nota2_y = random(50, 500) * -1;
-            }
-            if(nota3_y >= 600) {
-                nota3_y = random(50, 500) * -1;
-            }
-            if(nota4_y >= 600) {
-                nota4_y = random(50, 500) * -1;
-            }
+
             
             //como eu movi o passaro, preciso redesenhar ele (remova essa linha e veja o que acontece)
             redraw = true;
@@ -256,7 +256,7 @@ int main(int argc, char **argv){
            
         }
         //se o evento for o fechamento da tela (clicando no x no canto superior direito)
-        else if(ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE  ) {
+        else if(ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
             //paro de executar o while
             break;
         }
