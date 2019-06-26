@@ -9,7 +9,7 @@
 #include <allegro5/allegro_ttf.h>
 
 //variaveis globais
-const float FPS = 50; //numero de quadros por segundo, a ser carregado no temporizador (altere esse valor e veja o que acontece)
+const float FPS = 30; //numero de quadros por segundo, a ser carregado no temporizador (altere esse valor e veja o que acontece)
 const int SCREEN_W = 800;  //largura da tela
 const int SCREEN_H = 600;  //altura da tela
 
@@ -20,6 +20,7 @@ int random(int min, int max) {
 int main(int argc, char **argv){
     int score = 50;
 
+
     srand(time(NULL));
     //tela
     ALLEGRO_DISPLAY *display = NULL;
@@ -28,10 +29,14 @@ int main(int argc, char **argv){
     //temporizador: quando FPS = 10, a cada 0.1 segundos o tempo passa de t para t+1 e a fila de eventos detecta
     ALLEGRO_TIMER *timer = NULL;
     // Notas musicais
-    ALLEGRO_BITMAP *nota1 = NULL;
-    ALLEGRO_BITMAP *nota2 = NULL;
-    ALLEGRO_BITMAP *nota3 = NULL;
-    ALLEGRO_BITMAP *nota4 = NULL;
+    ALLEGRO_BITMAP *nota11 = NULL;
+    ALLEGRO_BITMAP *nota12 = NULL;
+    ALLEGRO_BITMAP *nota21 = NULL;
+    ALLEGRO_BITMAP *nota22 = NULL;
+    ALLEGRO_BITMAP *nota31 = NULL;
+    ALLEGRO_BITMAP *nota32 = NULL;
+    ALLEGRO_BITMAP *nota41 = NULL;
+    ALLEGRO_BITMAP *nota42 = NULL;
     
     //variavel que indica se eh para redesenhar o passaro
     bool redraw = true;
@@ -83,7 +88,6 @@ int main(int argc, char **argv){
         printf( "Audio clip sample not loaded!\n" ); 
         return -1;
     }
-    al_play_sample(sample, 1.0, 0.0,1.0,ALLEGRO_PLAYMODE_ONCE,NULL);
 
     // Inicializa a Imagem
     imagem = al_load_bitmap("bg.png");
@@ -107,40 +111,45 @@ int main(int argc, char **argv){
     ALLEGRO_FONT *size_32 = al_load_font("arial.ttf", 32, 1);   	
 
 
-    // ----------- Nota 1
-    nota1 = al_load_bitmap("nota1.png");
-	//se nao conseguiu achar o arquivo, imprime uma msg de erro
-    if(!nota1) {
-      fprintf(stderr, "failed to create bird bitmap!\n");
-      al_destroy_display(display);
-      al_destroy_timer(timer);
-      return -1;
-    }
-    //largura e altura da figura do passaro
-    float largura_passaro =  al_get_bitmap_width(nota1);
-    float altura_passaro =  al_get_bitmap_height(nota1);
-    //posicao x e y inicial do passaro na tela
-    float bird_x = SCREEN_W / 2.0 - 50 - 19 - 50 - 7;
-    float bird_y = random(50, 500) * -1;
-
     //variacao de x e y ao longo do tempo
-    float bird_dx = 0.0, bird_dy = 5.0;
+    float nota_dy = 5.0;
 
+
+    // ----------- Nota 1
+    nota11 = al_load_bitmap("nota1.png");
+    float nota11_x = SCREEN_W / 2.0 - 50 - 19 - 50 - 7;
+    float nota11_y = random(50, 500) * -1;
+
+    nota12 = al_load_bitmap("nota1.png");
+    float nota12_x = SCREEN_W / 2.0 - 50 - 19 - 50 - 7;
+    float nota12_y = random(60, 500) * -1;
 
     // -- nota 2
-    nota2 = al_load_bitmap("nota2.png");
-    float nota2_x = SCREEN_W / 2.0 - 50 - 10;
-    float nota2_y = random(50, 500) * -1;
+    nota21 = al_load_bitmap("nota2.png");
+    float nota21_x = SCREEN_W / 2.0 - 50 - 10;
+    float nota21_y = random(50, 500) * -1;
+
+    nota22 = al_load_bitmap("nota2.png");
+    float nota22_x = SCREEN_W / 2.0 - 50 - 10;
+    float nota22_y = random(60, 500) * -1;
 
     // -- nota 3
-    nota3 = al_load_bitmap("nota3.png");
-    float nota3_x = SCREEN_W / 2.0 + 7;
-    float nota3_y = random(50, 500) * -1;
+    nota31 = al_load_bitmap("nota3.png");
+    float nota31_x = SCREEN_W / 2.0 + 7;
+    float nota31_y = random(50, 500) * -1;
+
+    nota32 = al_load_bitmap("nota3.png");
+    float nota32_x = SCREEN_W / 2.0 + 7;
+    float nota32_y = random(60, 500) * -1;
 
     // -- nota 4
-    nota4 = al_load_bitmap("nota4.png");
-    float nota4_x = SCREEN_W / 2.0 + 76;
-    float nota4_y = random(50, 500) * -1;
+    nota41 = al_load_bitmap("nota4.png");
+    float nota41_x = SCREEN_W / 2.0 + 76;
+    float nota41_y = random(50, 500) * -1;
+
+    nota42 = al_load_bitmap("nota4.png");
+    float nota42_x = SCREEN_W / 2.0 + 76;
+    float nota42_y = random(60, 500) * -1;
 
 
     //criar a fila de eventos
@@ -148,7 +157,6 @@ int main(int argc, char **argv){
 	//se nao conseguiu criar a fila de eventos
     if(!event_queue) {
       fprintf(stderr, "failed to create event_queue!\n");
-      al_destroy_bitmap(nota1);
       al_destroy_display(display);
       al_destroy_timer(timer);
       return -1;
@@ -167,64 +175,111 @@ int main(int argc, char **argv){
     al_flip_display();
 
     //inicia o temporizador
+
+
     al_start_timer(timer);
 
+    int tTimer = 0;
     //enquanto a posicao x do passaro for menor que a largura da tela
-    while(score > -100 || al_play_sample(sample, 1.0, 0.0,1.0,ALLEGRO_PLAYMODE_ONCE,NULL)) {
+    while(tTimer < 74 && score > -100) {
+        al_play_sample(sample, 1.0, 0.0,1.0,ALLEGRO_PLAYMODE_ONCE,NULL);
+        tTimer = al_get_timer_count(timer)/(int)FPS;
+
+
+        
         //variavel do tipo evento
         ALLEGRO_EVENT ev;
         //a variavel ev recebe o primeiro evento da fila de eventos
         al_wait_for_event(event_queue, &ev);
         //se for um evento de timer, ou seja, se foi o tempo que passou de t para t+1
         
-        if(bird_y > 600) {
-            bird_y = random(50, 500) * -1;
+        if(nota11_y > 600) {
+            nota11_y = random(50, 500) * -1;
             score -= 10;
         }
-        if(nota2_y > 600) {
-            nota2_y = random(50, 500) * -1;
+        if(nota12_y > 600) {
+            nota12_y = random(60, 500) * -1;
             score -= 10;
         }
-        if(nota3_y > 600) {
-            nota3_y = random(50, 500) * -1;
+        if(nota21_y > 600) {
+            nota21_y = random(50, 500) * -1;
+            score -= 10;
+        }       
+        if(nota22_y > 600) {
+            nota22_y = random(60, 500) * -1;
             score -= 10;
         }
-        if(nota4_y > 600) {
-            nota4_y = random(50, 500) * -1;
+        if(nota31_y > 600) {
+            nota31_y = random(50, 500) * -1;
             score -= 10;
         }
+        if(nota32_y > 600) {
+            nota32_y = random(60, 500) * -1;
+            score -= 10;
+        }
+        if(nota41_y > 600) {
+            nota41_y = random(50, 500) * -1;
+            score -= 10;
+        }
+        if(nota42_y > 600) {
+            nota42_y = random(60, 500) * -1;
+            score -= 10;
+        }
+        
 
         if(ev.type == ALLEGRO_EVENT_KEY_DOWN){
             switch(ev.keyboard.keycode){
                 case ALLEGRO_KEY_Q:
-                    if(bird_y >= 500 && bird_y <= 600) {
+                    if(nota11_y >= 500 && nota11_y <= 600) {
                         printf("\a");
-                        bird_y = random(50, 500) * -1;
+                        nota11_y = random(50, 500) * -1;
+                        score += 5;
+                    }
+                    else if(nota12_y >= 500 && nota12_y <= 600) {
+                        printf("\a");
+                        nota12_y = random(50, 500) * -1;
                         score += 5;
                     }
                     else score -= 10;
                     break;
 
                 case ALLEGRO_KEY_W:
-                    if(nota2_y >= 500 && nota2_y <= 600) {
+                    if(nota21_y >= 500 && nota21_y <= 600) {
                         printf("\a");
-                        nota2_y = random(50, 500) * -1;
-                        score += 5;                        
+                        nota21_y = random(50, 500) * -1;
+                        score += 5;
+                    }
+                    else if(nota22_y >= 500 && nota22_y <= 600) {
+                        printf("\a");
+                        nota22_y = random(50, 500) * -1;
+                        score += 5;
                     }
                     else score -= 10;
                     break;
+
                 case ALLEGRO_KEY_O:
-                    if(nota3_y >= 500 && nota3_y <= 600) {
+                    if(nota31_y >= 500 && nota31_y <= 600) {
                         printf("\a");
-                        nota3_y = random(50, 500) * -1;
-                        score += 5;                        
+                        nota31_y = random(50, 500) * -1;
+                        score += 5;
+                    }
+                    else if(nota32_y >= 500 && nota32_y <= 600) {
+                        printf("\a");
+                        nota32_y = random(50, 500) * -1;
+                        score += 5;
                     }
                     else score -= 10;
                     break;
+
                 case ALLEGRO_KEY_P:    
-                    if(nota4_y >= 500 && nota4_y <= 600) {
+                    if(nota41_y >= 500 && nota41_y <= 600) {
                         printf("\a");
-                        nota4_y = random(50, 500) * -1;
+                        nota41_y = random(50, 500) * -1;
+                        score += 5;
+                    }
+                    else if(nota42_y >= 500 && nota42_y <= 600) {
+                        printf("\a");
+                        nota42_y = random(50, 500) * -1;
                         score += 5;
                     }
                     else score -= 10;
@@ -236,20 +291,15 @@ int main(int argc, char **argv){
  
            
             //incrementa as posicoes x e y do passaro com o seu deslocamento dx e dy
-            bird_x += bird_dx;
-            bird_y += bird_dy;
-
-            nota2_x += bird_dx;
-            nota2_y += bird_dy;
-
-            nota3_x += bird_dx;
-            nota3_y += bird_dy;
-
-            nota4_x += bird_dx;
-            nota4_y += bird_dy;
-            
-
-            
+            nota11_y += nota_dy;
+            nota12_y += nota_dy;
+            nota21_y += nota_dy;
+            nota22_y += nota_dy;
+            nota31_y += nota_dy;
+            nota32_y += nota_dy;
+            nota41_y += nota_dy;
+            nota42_y += nota_dy;
+ 
             //como eu movi o passaro, preciso redesenhar ele (remova essa linha e veja o que acontece)
             redraw = true;
 
@@ -267,23 +317,38 @@ int main(int argc, char **argv){
             //limpo a tela
             al_draw_bitmap(imagem, 0, 0, 0);    
             //desenho o passaro na nova posicao
-            al_draw_bitmap(nota1, bird_x, bird_y, 0);
-            al_draw_bitmap(nota2, nota2_x, nota2_y, 0);
-            al_draw_bitmap(nota3, nota3_x, nota3_y, 0);
-            al_draw_bitmap(nota4, nota4_x, nota4_y, 0);
+            al_draw_bitmap(nota11, nota11_x, nota11_y, 0);
+            al_draw_bitmap(nota12, nota12_x, nota12_y, 0);
+            al_draw_bitmap(nota21, nota21_x, nota21_y, 0);
+            al_draw_bitmap(nota22, nota22_x, nota22_y, 0);
+            al_draw_bitmap(nota31, nota31_x, nota31_y, 0);
+            al_draw_bitmap(nota32, nota32_x, nota32_y, 0);
+            al_draw_bitmap(nota41, nota41_x, nota41_y, 0);
+            al_draw_bitmap(nota42, nota42_x, nota42_y, 0);
+
             //dou um refresh na tela
 
             char my_text[20];
-            //colore toda a tela de preto
             sprintf(my_text, "Score: %d", score);
             al_draw_text(size_32, al_map_rgb(200, 0, 30), 50, SCREEN_H/2, 0, my_text);
             al_flip_display();
+
+
+            char time[20];
+            sprintf(time, "Tempo: %d", tTimer);
+            al_draw_text(size_32, al_map_rgb(200, 0, 30), 50, SCREEN_H/2 + 50, 0, time);
+            al_flip_display();
         }
+
+
+
+
+
+
     } //fim while
 
     //rotinas de fim de jogo
     al_destroy_sample(sample);
-    al_destroy_bitmap(nota1);
     al_destroy_timer(timer);
     al_destroy_display(display);
     al_destroy_event_queue(event_queue);
