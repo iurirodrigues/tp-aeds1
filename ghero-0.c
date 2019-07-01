@@ -8,26 +8,33 @@
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_ttf.h>
 
-//variaveis globais
+// Variaveis globais
 const float FPS = 30; //numero de quadros por segundo, a ser carregado no temporizador (altere esse valor e veja o que acontece)
 const int SCREEN_W = 800;  //largura da tela
 const int SCREEN_H = 600;  //altura da tela
 
+// Função random
 int random(int min, int max) {
     return min + rand()%(max+1-min);
 }
 
+// ---------------------------------------------- Main ---------------------------------------------- //
 int main(int argc, char **argv){
     int score = 50;
-
-
     srand(time(NULL));
-    //tela
+    bool redraw = true;
+
+    // ------------------- Declaração de váriaveis ------------------- //
+    // Allegro
     ALLEGRO_DISPLAY *display = NULL;
-    //fila de eventos detectados pelo Allegro (ex: tecla que foi apertada, clique do mouse etc)
     ALLEGRO_EVENT_QUEUE *event_queue = NULL;
-    //temporizador: quando FPS = 10, a cada 0.1 segundos o tempo passa de t para t+1 e a fila de eventos detecta
     ALLEGRO_TIMER *timer = NULL;
+
+    // Imagens do Jogos 
+    ALLEGRO_BITMAP *fluffy = NULL;
+    ALLEGRO_BITMAP *imagem = NULL;
+    ALLEGRO_BITMAP *gameover = NULL;
+
     // Notas musicais
     ALLEGRO_BITMAP *nota11 = NULL;
     ALLEGRO_BITMAP *nota12 = NULL;
@@ -37,75 +44,72 @@ int main(int argc, char **argv){
     ALLEGRO_BITMAP *nota32 = NULL;
     ALLEGRO_BITMAP *nota41 = NULL;
     ALLEGRO_BITMAP *nota42 = NULL;
-    
-    //variavel que indica se eh para redesenhar o passaro
-    bool redraw = true;
-    ALLEGRO_BITMAP *imagem = NULL;
+
+    // Sons
     ALLEGRO_SAMPLE *sample = NULL;
  
-    //------------------------------ rotinas de inicializacao -------------------------
-
-	//inicializa o allegro. Se nao conseguir, imprime na tela uma msg de erro.
+    // ------------------- Rotinas de Inicialização ------------------- //
     if(!al_init()) {
       fprintf(stderr, "failed to initialize allegro!\n");
       return -1;
     }
 
-	//inicializa o temporizador com a taxa de 1 quadro a cada 0.1 segundos. Se nao conseguir, imprime na tela uma msg de erro.
+    if(!al_install_keyboard()) {
+        fprintf(stderr, "failed to initialize keyboard!\n");
+        return -1;
+    }
+
     timer = al_create_timer(1.0 / FPS);
     if(!timer) {
       fprintf(stderr, "failed to create timer!\n");
       return -1;
     }
 
-	//inicializa a tela. Se nao conseguir, imprime na tela uma msg de erro.
-    display = al_create_display(SCREEN_W, SCREEN_H);
+	display = al_create_display(SCREEN_W, SCREEN_H);
     if(!display) {
       fprintf(stderr, "failed to create display!\n");
       al_destroy_timer(timer);
       return -1;
     }
 
-    al_init_image_addon();
-
-
     if(!al_install_audio()){
         fprintf(stderr, "failed to initialize audio!\n");
         return -1;
     }
+
     if(!al_init_acodec_addon()){
         fprintf(stderr, "failed to initialize audio codecs!\n");
         return -1;
     }
+    
     if (!al_reserve_samples(1)){
         fprintf(stderr, "failed to reserve samples!\n");
         return -1;
     }
 
+    if(!al_init_image_addon()){
+        fprintf(stderr, "failed to initialize image codecs!\n");
+        return -1;
+    }
+    al_init_font_addon();
+    al_init_ttf_addon();
+
+
     // Inicializa a Música
-    sample = al_load_sample("theme.ogg");
+    sample = al_load_sample("resources\\sounds\\normal.ogg");
     if (!sample){
         printf( "Audio clip sample not loaded!\n" ); 
         return -1;
     }
 
     // Inicializa a Imagem
-    imagem = al_load_bitmap("bg.png");
-    if (!imagem){
+    imagem = al_load_bitmap("resources\\images\\bg.png");
+    if (!imagem) {
         printf( "imagem sample not loaded!\n" ); 
         return -1;
     }
     al_draw_bitmap(imagem, 0, 0, 0);
 
-
-    // Teclado
-    al_install_keyboard();
-
-// ---------- fontes
-    //inicializa o modulo allegro que carrega as fontes
-    al_init_font_addon();
-	//inicializa o modulo allegro que entende arquivos tff de fontes
-    al_init_ttf_addon();
 
 	//carrega o arquivo arial.ttf da fonte Arial e define que sera usado o tamanho 32 (segundo parametro)
     ALLEGRO_FONT *size_32 = al_load_font("arial.ttf", 32, 1);   	
@@ -117,38 +121,38 @@ int main(int argc, char **argv){
 
     // ----------- Nota 1
     nota11 = al_load_bitmap("nota1.png");
-    float nota11_x = SCREEN_W / 2.0 - 50 - 19 - 50 - 7;
+    float nota11_x = 300;
     float nota11_y = random(50, 500) * -1;
 
     nota12 = al_load_bitmap("nota1.png");
-    float nota12_x = SCREEN_W / 2.0 - 50 - 19 - 50 - 7;
+    float nota12_x = 300;
     float nota12_y = random(60, 500) * -1;
 
     // -- nota 2
     nota21 = al_load_bitmap("nota2.png");
-    float nota21_x = SCREEN_W / 2.0 - 50 - 10;
+    float nota21_x = 370;
     float nota21_y = random(50, 500) * -1;
 
     nota22 = al_load_bitmap("nota2.png");
-    float nota22_x = SCREEN_W / 2.0 - 50 - 10;
+    float nota22_x = 370;
     float nota22_y = random(60, 500) * -1;
 
     // -- nota 3
     nota31 = al_load_bitmap("nota3.png");
-    float nota31_x = SCREEN_W / 2.0 + 7;
+    float nota31_x = 440;
     float nota31_y = random(50, 500) * -1;
 
     nota32 = al_load_bitmap("nota3.png");
-    float nota32_x = SCREEN_W / 2.0 + 7;
+    float nota32_x = 440;
     float nota32_y = random(60, 500) * -1;
 
     // -- nota 4
     nota41 = al_load_bitmap("nota4.png");
-    float nota41_x = SCREEN_W / 2.0 + 76;
+    float nota41_x = 510;
     float nota41_y = random(50, 500) * -1;
 
     nota42 = al_load_bitmap("nota4.png");
-    float nota42_x = SCREEN_W / 2.0 + 76;
+    float nota42_x = 510;
     float nota42_y = random(60, 500) * -1;
 
 
@@ -171,17 +175,29 @@ int main(int argc, char **argv){
     // teclado
     al_register_event_source(event_queue, al_get_keyboard_event_source());
 
+
+
+
+    fluffy = al_load_bitmap("resources\\images\\fluffy.png");
+    float fluffy_x = 67;
+    float fluffy_y = 246;
+
+
+
+
+
+
+
+
     //reinicializa a tela
     al_flip_display();
 
-    //inicia o temporizador
-
-
+    //inicia o temporizado
     al_start_timer(timer);
 
     int tTimer = 0;
     //enquanto a posicao x do passaro for menor que a largura da tela
-    while(tTimer < 74 && score > -100) {
+    while(tTimer < 94 && score > -100) {
         al_play_sample(sample, 1.0, 0.0,1.0,ALLEGRO_PLAYMODE_ONCE,NULL);
         tTimer = al_get_timer_count(timer)/(int)FPS;
 
@@ -196,36 +212,47 @@ int main(int argc, char **argv){
         if(nota11_y > 600) {
             nota11_y = random(50, 500) * -1;
             score -= 10;
+            fluffy_y += 10; 
         }
         if(nota12_y > 600) {
             nota12_y = random(60, 500) * -1;
             score -= 10;
+            fluffy_y += 10; 
         }
         if(nota21_y > 600) {
             nota21_y = random(50, 500) * -1;
             score -= 10;
+            fluffy_y += 10; 
         }       
         if(nota22_y > 600) {
             nota22_y = random(60, 500) * -1;
             score -= 10;
+            fluffy_y += 10; 
         }
         if(nota31_y > 600) {
             nota31_y = random(50, 500) * -1;
             score -= 10;
+            fluffy_y += 10; 
         }
         if(nota32_y > 600) {
             nota32_y = random(60, 500) * -1;
             score -= 10;
+            fluffy_y += 10; 
         }
         if(nota41_y > 600) {
             nota41_y = random(50, 500) * -1;
             score -= 10;
+            fluffy_y += 10; 
         }
         if(nota42_y > 600) {
             nota42_y = random(60, 500) * -1;
             score -= 10;
+            fluffy_y += 10; 
         }
-        
+
+        float fluffy_dy = 5;
+
+
 
         if(ev.type == ALLEGRO_EVENT_KEY_DOWN){
             switch(ev.keyboard.keycode){
@@ -233,14 +260,17 @@ int main(int argc, char **argv){
                     if(nota11_y >= 500 && nota11_y <= 600) {
                         printf("\a");
                         nota11_y = random(50, 500) * -1;
-                        score += 5;
-                    }
+                        score += 5;                    }
                     else if(nota12_y >= 500 && nota12_y <= 600) {
                         printf("\a");
                         nota12_y = random(50, 500) * -1;
                         score += 5;
                     }
-                    else score -= 10;
+                    else {
+                        score -= 10;
+                        fluffy_y += 10;                        
+
+                    }
                     break;
 
                 case ALLEGRO_KEY_W:
@@ -254,7 +284,11 @@ int main(int argc, char **argv){
                         nota22_y = random(50, 500) * -1;
                         score += 5;
                     }
-                    else score -= 10;
+                    else {
+                        score -= 10;
+                        fluffy_y += 10;                        
+
+                    }
                     break;
 
                 case ALLEGRO_KEY_O:
@@ -268,7 +302,10 @@ int main(int argc, char **argv){
                         nota32_y = random(50, 500) * -1;
                         score += 5;
                     }
-                    else score -= 10;
+                    else {
+                        score -= 10;
+                        fluffy_y += 10;                        
+                    }
                     break;
 
                 case ALLEGRO_KEY_P:    
@@ -281,15 +318,18 @@ int main(int argc, char **argv){
                         printf("\a");
                         nota42_y = random(50, 500) * -1;
                         score += 5;
+
                     }
-                    else score -= 10;
+                    else {
+                        score -= 10;
+                        fluffy_y += 10;                        
+                    }
                     break;
             }
         }
         
         if(ev.type == ALLEGRO_EVENT_TIMER) {
- 
-           
+
             //incrementa as posicoes x e y do passaro com o seu deslocamento dx e dy
             nota11_y += nota_dy;
             nota12_y += nota_dy;
@@ -326,26 +366,25 @@ int main(int argc, char **argv){
             al_draw_bitmap(nota41, nota41_x, nota41_y, 0);
             al_draw_bitmap(nota42, nota42_x, nota42_y, 0);
 
+            al_draw_bitmap(fluffy, fluffy_x, fluffy_y, 0);
             //dou um refresh na tela
 
-            char my_text[20];
-            sprintf(my_text, "Score: %d", score);
-            al_draw_text(size_32, al_map_rgb(200, 0, 30), 50, SCREEN_H/2, 0, my_text);
-            al_flip_display();
-
-
-            char time[20];
-            sprintf(time, "Tempo: %d", tTimer);
-            al_draw_text(size_32, al_map_rgb(200, 0, 30), 50, SCREEN_H/2 + 50, 0, time);
+            char my_text[10];
+            sprintf(my_text, "%d", score);
+            al_draw_text(size_32, al_map_rgb(254, 254, 254), 57, 97, 0, my_text);
             al_flip_display();
         }
-
-
-
-
-
-
     } //fim while
+    al_destroy_sample(sample);
+
+    // Game Over
+    char my_text[10];
+    sprintf(my_text, "%d", score);
+    gameover = al_load_bitmap("resources\\images\\gameover.png");
+    al_draw_bitmap(gameover, 0, 0, 0);
+    al_draw_text(size_32, al_map_rgb(254, 254, 254), 240, 494, 0, my_text);
+    al_flip_display();
+    al_rest(5.0);
 
     //rotinas de fim de jogo
     al_destroy_sample(sample);
