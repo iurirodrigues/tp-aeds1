@@ -18,9 +18,19 @@ int random(int min, int max) {
     return min + rand()%(max+1-min);
 }
 
+
+void moveFluffy(float *fluffy_y, int score) {
+    if(score==0 && *fluffy_y < 520) {
+        *fluffy_y += 10;
+    }
+    if(score==1 && *fluffy_y > 320) {
+        *fluffy_y -= 5;
+    }
+}
+
 // ---------------------------------------------- Main ---------------------------------------------- //
 int main(int argc, char **argv){
-    int score = 50;
+    int score = 0;
     srand(time(NULL));
     bool redraw = true;
 
@@ -95,9 +105,9 @@ int main(int argc, char **argv){
     al_init_ttf_addon();
 
     // ------------------- Bitmaps ------------------- //
-    bg_jogo = al_load_bitmap("resources\\images\\bg.png");
+    bg_jogo = al_load_bitmap("resources\\images\\bg_jogo.png");
     fluffy = al_load_bitmap("resources\\images\\fluffy.png");
-    float fluffy_y = 246;
+    float fluffy_y = 420;
 
     // Notas
     nota11 = al_load_bitmap("resources\\images\\nota1.png");
@@ -124,6 +134,7 @@ int main(int argc, char **argv){
 
     // ------------------- Fontes ------------------- //
     ALLEGRO_FONT *size_32 = al_load_font("arial.ttf", 32, 1);   	
+    ALLEGRO_FONT *CentSchbkCyrill = al_load_font("resources\\CentSchbkCyrill.ttf", 50, 1); 
 
 
     //criar a fila de eventos
@@ -147,49 +158,57 @@ int main(int argc, char **argv){
         tTimer = al_get_timer_count(timer)/(int)FPS;
         ALLEGRO_EVENT ev;
         al_wait_for_event(event_queue, &ev);
+        int verificaScore;
         
-        float fluffy_dy = 5;
+
         
         // Perca de pontos caso ultrapasse a area crítica
         if(nota11_y > 600) {
             nota11_y = random(50, 500) * -1;
             score -= 10;
-            fluffy_y += 10; 
+            verificaScore = 0;
         }
         if(nota12_y > 600) {
             nota12_y = random(60, 500) * -1;
             score -= 10;
-            fluffy_y += 10; 
+            verificaScore = 0;
+
         }
         if(nota21_y > 600) {
             nota21_y = random(50, 500) * -1;
             score -= 10;
-            fluffy_y += 10; 
+            verificaScore = 0;
+
         }       
         if(nota22_y > 600) {
             nota22_y = random(60, 500) * -1;
             score -= 10;
-            fluffy_y += 10; 
+            verificaScore = 0;
+
         }
         if(nota31_y > 600) {
             nota31_y = random(50, 500) * -1;
             score -= 10;
-            fluffy_y += 10; 
+            verificaScore = 0;
+
         }
         if(nota32_y > 600) {
             nota32_y = random(60, 500) * -1;
             score -= 10;
-            fluffy_y += 10; 
+            verificaScore = 0;
+
         }
         if(nota41_y > 600) {
             nota41_y = random(50, 500) * -1;
             score -= 10;
-            fluffy_y += 10; 
+            verificaScore = 0;
+
         }
         if(nota42_y > 600) {
             nota42_y = random(60, 500) * -1;
             score -= 10;
-            fluffy_y += 10; 
+            verificaScore = 0;
+
         }
 
         // 
@@ -199,15 +218,18 @@ int main(int argc, char **argv){
                     if(nota11_y >= 500 && nota11_y <= 600) {
                         printf("\a");
                         nota11_y = random(50, 500) * -1;
-                        score += 5;                    }
+                        score += 5;      
+                        verificaScore = 1;
+                    }
                     else if(nota12_y >= 500 && nota12_y <= 600) {
                         printf("\a");
                         nota12_y = random(50, 500) * -1;
                         score += 5;
+                        verificaScore = 1;
                     }
                     else {
                         score -= 10;
-                        fluffy_y += 10;                        
+                        verificaScore = 0;
 
                     }
                     break;
@@ -217,15 +239,19 @@ int main(int argc, char **argv){
                         printf("\a");
                         nota21_y = random(50, 500) * -1;
                         score += 5;
+                        verificaScore = 1;
+
                     }
                     else if(nota22_y >= 500 && nota22_y <= 600) {
                         printf("\a");
                         nota22_y = random(50, 500) * -1;
                         score += 5;
+                        verificaScore = 1;
+
                     }
                     else {
                         score -= 10;
-                        fluffy_y += 10;                        
+                        verificaScore = 0;
 
                     }
                     break;
@@ -235,15 +261,20 @@ int main(int argc, char **argv){
                         printf("\a");
                         nota31_y = random(50, 500) * -1;
                         score += 5;
+                        verificaScore = 1;
+
                     }
                     else if(nota32_y >= 500 && nota32_y <= 600) {
                         printf("\a");
                         nota32_y = random(50, 500) * -1;
                         score += 5;
+                        verificaScore = 1;
+
                     }
                     else {
                         score -= 10;
-                        fluffy_y += 10;                        
+                        verificaScore = 0;
+
                     }
                     break;
 
@@ -252,21 +283,31 @@ int main(int argc, char **argv){
                         printf("\a");
                         nota41_y = random(50, 500) * -1;
                         score += 5;
+                        verificaScore = 1;
+
                     }
                     else if(nota42_y >= 500 && nota42_y <= 600) {
                         printf("\a");
                         nota42_y = random(50, 500) * -1;
                         score += 5;
+                        verificaScore = 1;
 
                     }
                     else {
                         score -= 10;
-                        fluffy_y += 10;                        
+                        verificaScore = 0;
+
                     }
                     break;
             }
         }
-        
+
+        moveFluffy(&fluffy_y, verificaScore);
+        verificaScore = 2;
+
+        printf("%f", fluffy_y);
+
+
         if(ev.type == ALLEGRO_EVENT_TIMER) {
             nota11_y += nota_dy;
             nota12_y += nota_dy;
@@ -290,16 +331,18 @@ int main(int argc, char **argv){
             al_draw_bitmap(nota32, 440, nota32_y, 0);
             al_draw_bitmap(nota41, 510, nota41_y, 0);
             al_draw_bitmap(nota42, 510, nota42_y, 0);
-            al_draw_bitmap(fluffy, 67, fluffy_y, 0);
+            al_draw_bitmap(fluffy, 85, fluffy_y, 0);
 
             char my_text[10];
             sprintf(my_text, "%d", score);
-            al_draw_text(size_32, al_map_rgb(254, 254, 254), 57, 97, 0, my_text);
+            al_draw_text(CentSchbkCyrill, al_map_rgb(254, 254, 254), 120, 130, ALLEGRO_ALIGN_CENTRE, my_text);
 
             al_flip_display();
         }
     } 
     al_destroy_sample(sample);
+
+
 
     // Game Over ---------------------
     char my_text[10];
