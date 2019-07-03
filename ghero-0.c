@@ -44,6 +44,7 @@ int main(int argc, char **argv){
     ALLEGRO_BITMAP *fluffy = NULL;
     ALLEGRO_BITMAP *bg_jogo = NULL;
     ALLEGRO_BITMAP *gameover = NULL;
+    ALLEGRO_BITMAP *bg_ganhou = NULL;
 
     // Notas musicais
     ALLEGRO_BITMAP *nota11 = NULL;
@@ -159,8 +160,6 @@ int main(int argc, char **argv){
         ALLEGRO_EVENT ev;
         al_wait_for_event(event_queue, &ev);
         int verificaScore;
-        
-
         
         // Perca de pontos caso ultrapasse a area crítica
         if(nota11_y > 600) {
@@ -344,14 +343,25 @@ int main(int argc, char **argv){
 
 
 
-    // Game Over ---------------------
-    char my_text[10];
-    sprintf(my_text, "%d", score);
-    gameover = al_load_bitmap("resources\\images\\gameover.png");
-    al_draw_bitmap(gameover, 0, 0, 0);
-    al_draw_text(size_32, al_map_rgb(254, 254, 254), 240, 494, 0, my_text);
-    al_flip_display();
-    al_rest(5.0);
+    // Final
+    if(score <= -100) {
+        char my_text[10];
+        sprintf(my_text, "%d", score);
+        gameover = al_load_bitmap("resources\\images\\gameover.png");
+        al_draw_bitmap(gameover, 0, 0, 0);
+        al_draw_text(size_32, al_map_rgb(254, 254, 254), 240, 494, 0, my_text);
+        al_flip_display();
+        al_rest(5.0);
+    }
+    else {
+        char my_text[10];
+        sprintf(my_text, "%d", score);
+        bg_ganhou = al_load_bitmap("resources\\images\\bg_ganhou.png");
+        al_draw_bitmap(bg_ganhou, 0, 0, 0);
+        al_draw_text(size_32, al_map_rgb(254, 254, 254), 240, 494, 0, my_text);
+        al_flip_display();
+        al_rest(5.0);
+    }
 
     //rotinas de fim de jogo
     al_destroy_event_queue(event_queue);
