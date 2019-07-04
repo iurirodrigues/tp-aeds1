@@ -13,15 +13,15 @@ const float FPS = 40; // numero de quadros por segundo
 const int SCREEN_W = 800;  // largura da tela
 const int SCREEN_H = 600;  // altura da tela
 
-int random(int min, int max) {
+int notasAleatorias(int min, int max) {
     return min + rand()%(max+1-min);
 }
 
 void moveFluffy(float *fluffy_y, int score) {
-    if(score==0 && *fluffy_y < 520) {
+    if(score==0 && *fluffy_y < 480) {
         *fluffy_y += 10;
     }
-    if(score==1 && *fluffy_y > 320) {
+    if(score==1 && *fluffy_y > 280) {
         *fluffy_y -= 5;
     }
 }
@@ -51,8 +51,11 @@ int main(int argc, char **argv){
     // Imagens do Jogos 
     ALLEGRO_BITMAP *fluffy = NULL;
     ALLEGRO_BITMAP *bg_jogo = NULL;
-    ALLEGRO_BITMAP *gameover = NULL;
+    ALLEGRO_BITMAP *bg_gameover = NULL;
     ALLEGRO_BITMAP *bg_ganhou = NULL;
+    ALLEGRO_BITMAP *harry = NULL;
+    ALLEGRO_BITMAP *rony = NULL;
+
 
     // Notas musicais
     ALLEGRO_BITMAP *nota11 = NULL;
@@ -66,7 +69,11 @@ int main(int argc, char **argv){
 
     // Sons
     ALLEGRO_SAMPLE *sample = NULL;
- 
+    ALLEGRO_SAMPLE *som_nota = NULL;
+    ALLEGRO_SAMPLE *coruja = NULL;
+    ALLEGRO_SAMPLE *fluffysharp = NULL;
+    ALLEGRO_SAMPLE *theme_ganhou = NULL;
+
     // ------------------- Rotinas de Inicialização ------------------- //
     if(!al_init()) {
       fprintf(stderr, "failed to initialize allegro!\n");
@@ -101,7 +108,7 @@ int main(int argc, char **argv){
         return -1;
     }
     
-    if (!al_reserve_samples(1)){
+    if (!al_reserve_samples(2)){
         fprintf(stderr, "failed to reserve samples!\n");
         return -1;
     }
@@ -114,47 +121,48 @@ int main(int argc, char **argv){
     al_init_ttf_addon();
 
     // ------------------- Bitmaps ------------------- //
-    bg_jogo = al_load_bitmap("resources\\images\\bg_jogo.png");
-    fluffy = al_load_bitmap("resources\\images\\fluffy.png");
-    float fluffy_y = 420;
+    bg_jogo = al_load_bitmap("resources//images//bg_jogo.png");
+    fluffy = al_load_bitmap("resources//images//fluffy.png");
+    float fluffy_y = 380;
 
     // Notas
-    nota11 = al_load_bitmap("resources\\images\\nota1.png");
-    float nota11_y = random(50, 500) * -1;
-    nota12 = al_load_bitmap("resources\\images\\nota1.png");
-    float nota12_y = random(60, 500) * -1;
+    nota11 = al_load_bitmap("resources//images//nota1.png");
+    float nota11_y = notasAleatorias(50, 500) * -1;
+    nota12 = al_load_bitmap("resources//images//nota1.png");
+    float nota12_y = notasAleatorias(60, 500) * -1;
     verificaNotas(&nota11_y, &nota12_y);
-    nota21 = al_load_bitmap("resources\\images\\nota2.png");
-    float nota21_y = random(50, 500) * -1;
-    nota22 = al_load_bitmap("resources\\images\\nota2.png");
-    float nota22_y = random(60, 500) * -1;
+    nota21 = al_load_bitmap("resources//images//nota2.png");
+    float nota21_y = notasAleatorias(50, 500) * -1;
+    nota22 = al_load_bitmap("resources//images//nota2.png");
+    float nota22_y = notasAleatorias(60, 500) * -1;
     verificaNotas(&nota21_y, &nota22_y);
-    nota31 = al_load_bitmap("resources\\images\\nota3.png");
-    float nota31_y = random(50, 500) * -1;
-    nota32 = al_load_bitmap("resources\\images\\nota3.png");
-    float nota32_y = random(60, 500) * -1;
+    nota31 = al_load_bitmap("resources//images//nota3.png");
+    float nota31_y = notasAleatorias(50, 500) * -1;
+    nota32 = al_load_bitmap("resources//images//nota3.png");
+    float nota32_y = notasAleatorias(60, 500) * -1;
     verificaNotas(&nota31_y, &nota32_y);
-    nota41 = al_load_bitmap("resources\\images\\nota4.png");
-    float nota41_y = random(50, 500) * -1;
-    nota42 = al_load_bitmap("resources\\images\\nota4.png");
-    float nota42_y = random(60, 500) * -1;
+    nota41 = al_load_bitmap("resources//images//nota4.png");
+    float nota41_y = notasAleatorias(50, 500) * -1;
+    nota42 = al_load_bitmap("resources//images//nota4.png");
+    float nota42_y = notasAleatorias(60, 500) * -1;
     verificaNotas(&nota41_y, &nota42_y);
     
     float nota_dy = 5.0;
 
     // ------------------- Sons ------------------- //
-    sample = al_load_sample("resources\\sounds\\normal.ogg");
+    sample = al_load_sample("resources//sounds//normal.ogg");
+    som_nota = al_load_sample("resources//sounds//som_nota.ogg");
 
     // ------------------- Fontes ------------------- //
-    ALLEGRO_FONT *size_32 = al_load_font("arial.ttf", 32, 1);   	
-    ALLEGRO_FONT *CentSchbkCyrill = al_load_font("resources\\CentSchbkCyrill.ttf", 50, 1);
+    ALLEGRO_FONT *CentSchbkCyrill = al_load_font("resources//CentSchbkCyrill.ttf", 50, 1);
+    ALLEGRO_FONT *pixelmix= al_load_font("resources//pixelmix.ttf", 13, 1);
 
     // Arquivos
-    record = fopen("resources\\record.txt","r");
-    fscanf(record, "%d", &high_score); //armazena o conteudo do arquivo na variavel high_score
+    record = fopen("resources//record.txt","r");
+    fscanf(record, "%d", &high_score); //armazena conteudo do arquivo na variavel high_score
     fclose(record);
-    printf("%d", high_score);
-    //criar a fila de eventos
+
+    //criar a fila de events
     event_queue = al_create_event_queue();
 
     //registrar mudancas na tela dentro da fila de eventos, isto e, sempre que a tela mudar, um evento ocorrerah
@@ -168,7 +176,7 @@ int main(int argc, char **argv){
 
     // JOGO --------------------------------------------------------------
     int tTimer = 0;
-    while(tTimer < 30 && score > -100) {
+    while(tTimer < 15 && score > -100) {
         al_draw_bitmap(bg_jogo, 0, 0, 0);
         al_play_sample(sample, 1.0, 0.0,1.0,ALLEGRO_PLAYMODE_ONCE,NULL);
         al_start_timer(timer);
@@ -179,48 +187,48 @@ int main(int argc, char **argv){
         
         // Perca de pontos caso ultrapasse a area crítica
         if(nota11_y > 600) {
-            nota11_y = random(50, 500) * -1;
+            nota11_y = notasAleatorias(50, 500) * -1;
             score -= 10;
             verificaScore = 0;
         }
         if(nota12_y > 600) {
-            nota12_y = random(60, 500) * -1;
+            nota12_y = notasAleatorias(60, 500) * -1;
             score -= 10;
             verificaScore = 0;
 
         }
         if(nota21_y > 600) {
-            nota21_y = random(50, 500) * -1;
+            nota21_y = notasAleatorias(50, 500) * -1;
             score -= 10;
             verificaScore = 0;
 
         }       
         if(nota22_y > 600) {
-            nota22_y = random(60, 500) * -1;
+            nota22_y = notasAleatorias(60, 500) * -1;
             score -= 10;
             verificaScore = 0;
 
         }
         if(nota31_y > 600) {
-            nota31_y = random(50, 500) * -1;
+            nota31_y = notasAleatorias(50, 500) * -1;
             score -= 10;
             verificaScore = 0;
 
         }
         if(nota32_y > 600) {
-            nota32_y = random(60, 500) * -1;
+            nota32_y = notasAleatorias(60, 500) * -1;
             score -= 10;
             verificaScore = 0;
 
         }
         if(nota41_y > 600) {
-            nota41_y = random(50, 500) * -1;
+            nota41_y = notasAleatorias(50, 500) * -1;
             score -= 10;
             verificaScore = 0;
 
         }
         if(nota42_y > 600) {
-            nota42_y = random(60, 500) * -1;
+            nota42_y = notasAleatorias(60, 500) * -1;
             score -= 10;
             verificaScore = 0;
 
@@ -232,13 +240,13 @@ int main(int argc, char **argv){
                 case ALLEGRO_KEY_Q:
                     if(nota11_y >= 500 && nota11_y <= 600) {
                         printf("\a");
-                        nota11_y = random(50, 500) * -1;
+                        nota11_y = notasAleatorias(50, 500) * -1;
                         score += 5;      
                         verificaScore = 1;
                     }
                     else if(nota12_y >= 500 && nota12_y <= 600) {
                         printf("\a");
-                        nota12_y = random(50, 500) * -1;
+                        nota12_y = notasAleatorias(50, 500) * -1;
                         score += 5;
                         verificaScore = 1;
                     }
@@ -252,14 +260,14 @@ int main(int argc, char **argv){
                 case ALLEGRO_KEY_W:
                     if(nota21_y >= 500 && nota21_y <= 600) {
                         printf("\a");
-                        nota21_y = random(50, 500) * -1;
+                        nota21_y = notasAleatorias(50, 500) * -1;
                         score += 5;
                         verificaScore = 1;
 
                     }
                     else if(nota22_y >= 500 && nota22_y <= 600) {
                         printf("\a");
-                        nota22_y = random(50, 500) * -1;
+                        nota22_y = notasAleatorias(50, 500) * -1;
                         score += 5;
                         verificaScore = 1;
 
@@ -274,14 +282,14 @@ int main(int argc, char **argv){
                 case ALLEGRO_KEY_O:
                     if(nota31_y >= 500 && nota31_y <= 600) {
                         printf("\a");
-                        nota31_y = random(50, 500) * -1;
+                        nota31_y = notasAleatorias(50, 500) * -1;
                         score += 5;
                         verificaScore = 1;
 
                     }
                     else if(nota32_y >= 500 && nota32_y <= 600) {
                         printf("\a");
-                        nota32_y = random(50, 500) * -1;
+                        nota32_y = notasAleatorias(50, 500) * -1;
                         score += 5;
                         verificaScore = 1;
 
@@ -296,14 +304,14 @@ int main(int argc, char **argv){
                 case ALLEGRO_KEY_P:    
                     if(nota41_y >= 500 && nota41_y <= 600) {
                         printf("\a");
-                        nota41_y = random(50, 500) * -1;
+                        nota41_y = notasAleatorias(50, 500) * -1;
                         score += 5;
                         verificaScore = 1;
 
                     }
                     else if(nota42_y >= 500 && nota42_y <= 600) {
                         printf("\a");
-                        nota42_y = random(50, 500) * -1;
+                        nota42_y = notasAleatorias(50, 500) * -1;
                         score += 5;
                         verificaScore = 1;
 
@@ -360,35 +368,75 @@ int main(int argc, char **argv){
     al_destroy_sample(sample);
 
     if(score > high_score) {
-        record = fopen("resources\\record.txt", "w"); //o arquivo eh agora aberto para escrita
+        record = fopen("resources//record.txt", "w"); //o arquivo eh agora aberto para escrita
         fprintf(record, "%d", score); //escreve no arquivo o novo recorde alcançado
         fclose(record);
         high_score = score;
     }
 
-    printf("\n%d", high_score);
+    coruja = al_load_sample("resources//sounds//coruja.ogg");
+    fluffysharp = al_load_sample("resources//sounds//fluffysharp.ogg");
+    theme_ganhou = al_load_sample("resources//sounds//ganhou.ogg");
+    
 
     // Final
     if(score <= -100) {
-        char my_text[10];
-        sprintf(my_text, "%d", score);
-        gameover = al_load_bitmap("resources\\images\\gameover.png");
-        al_draw_bitmap(gameover, 0, 0, 0);
-        al_draw_text(size_32, al_map_rgb(254, 254, 254), 240, 494, 0, my_text);
-        char my_highscore[10];
-        sprintf(my_highscore, "%d", high_score);
-        al_draw_text(size_32, al_map_rgb(254, 254, 254), 240, 550, 0, my_highscore);
+        al_play_sample(fluffysharp, 1.0, 0.0,1.0,ALLEGRO_PLAYMODE_ONCE,NULL);
+        char hermionetext[100];
+        sprintf(hermionetext, "Ah, nao! Voce acordou o Fluffy, Harry!");
+        bg_gameover = al_load_bitmap("resources//images//bg_gameover.png");
+        al_draw_bitmap(bg_gameover, 0, 0, 0);
+        al_play_sample(coruja, 0.5, 0.0,1.0,ALLEGRO_PLAYMODE_ONCE,NULL);
+        al_draw_text(pixelmix, al_map_rgb(254, 254, 254), 245, 400, 0, hermionetext);
         al_flip_display();
-        al_rest(5.0);
+        al_rest(1.5);
+
+        char ronytext[100];
+        sprintf(ronytext, "Voce conseguiu %d pontos!", score);
+        rony = al_load_bitmap("resources//images//rony.png");
+        al_draw_bitmap(rony, 64, 435, 0);
+        al_play_sample(coruja, 0.5, 0.0,1.0,ALLEGRO_PLAYMODE_ONCE,NULL);
+        al_draw_text(pixelmix, al_map_rgb(254, 254, 254), 345, 468, ALLEGRO_ALIGN_CENTRE, ronytext);
+        al_flip_display();
+        al_rest(1.5);
+
+        char harrytext[100];
+        sprintf(harrytext, "Poxa! Meu record eh %d pontos!", high_score);
+        harry = al_load_bitmap("resources//images//harry.png");
+        al_draw_bitmap(harry, 217, 500, 0);
+        al_play_sample(coruja, 0.5, 0.0,1.0,ALLEGRO_PLAYMODE_ONCE,NULL);
+        al_draw_text(pixelmix, al_map_rgb(254, 254, 254), 415, 533, ALLEGRO_ALIGN_CENTRE, harrytext);
+        al_flip_display();
+        al_rest(7.0);
     }
     else {
-        char my_text[10];
-        sprintf(my_text, "%d", score);
-        bg_ganhou = al_load_bitmap("resources\\images\\bg_ganhou.png");
+        al_play_sample(theme_ganhou, 0.8, 0.0,1.0,ALLEGRO_PLAYMODE_LOOP,NULL);
+        char hermionetext[100];
+        sprintf(hermionetext, "YAYYY! CONSEGUIMOS PASSAR PELO FLUFFY!");
+        bg_ganhou = al_load_bitmap("resources//images//bg_ganhou.png");
         al_draw_bitmap(bg_ganhou, 0, 0, 0);
-        al_draw_text(size_32, al_map_rgb(254, 254, 254), 240, 494, 0, my_text);
+        al_play_sample(coruja, 2.0, 0.0,1.0,ALLEGRO_PLAYMODE_ONCE,NULL);
+        al_draw_text(pixelmix, al_map_rgb(254, 254, 254), 245, 400, 0, hermionetext);
         al_flip_display();
-        al_rest(5.0);
+        al_rest(1.5);
+
+        char ronytext[100];
+        sprintf(ronytext, "Voce conseguiu %d pontos!", score);
+        rony = al_load_bitmap("resources//images//rony.png");
+        al_draw_bitmap(rony, 64, 435, 0);
+        al_play_sample(coruja, 2.0, 0.0,1.0,ALLEGRO_PLAYMODE_ONCE,NULL);
+        al_draw_text(pixelmix, al_map_rgb(254, 254, 254), 345, 468, ALLEGRO_ALIGN_CENTRE, ronytext);
+        al_flip_display();
+        al_rest(1.5);
+
+        char harrytext[100];
+        sprintf(harrytext, "Meu record eh %d pontos!", high_score);
+        harry = al_load_bitmap("resources//images//harry.png");
+        al_draw_bitmap(harry, 217, 500, 0);
+        al_play_sample(coruja, 2.0, 0.0,1.0,ALLEGRO_PLAYMODE_ONCE,NULL);
+        al_draw_text(pixelmix, al_map_rgb(254, 254, 254), 415, 533, ALLEGRO_ALIGN_CENTRE, harrytext);
+        al_flip_display();
+        al_rest(7.0);
     }
 
     //rotinas de fim de jogo

@@ -10,10 +10,10 @@ INCLUDE_ALLEGRO=\include
 all: ghero-0.exe
 	
 ghero-0.exe: ghero-0.o
-	gcc -o ghero-0.exe ghero-0.o $(PATH_ALLEGRO)$(LIB_ALLEGRO) 
+	gcc -o ghero-0.exe ghero-0.o $(PATH_ALLEGRO)$(LIB_ALLEGRO)
 
 ghero-0.o: ghero-0.c
-	gcc -I $(PATH_ALLEGRO)$(INCLUDE_ALLEGRO) -c ghero-0.c
+	gcc -I $(PATH_ALLEGRO)$(INCLUDE_ALLEGRO) -c ghero-0.c 
 	
  
 clean:
