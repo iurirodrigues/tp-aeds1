@@ -37,7 +37,7 @@ void verificaNotas(float *nota1, float *nota2) {
 // ---------------------------------------------- Main ---------------------------------------------- //
 int main(int argc, char **argv){
     FILE *record;
-    int high_score ;
+    int high_score = 0;
     int score = 0;
     srand(time(NULL));
     bool redraw = true;
@@ -158,7 +158,8 @@ int main(int argc, char **argv){
     ALLEGRO_FONT *pixelmix= al_load_font("resources//pixelmix.ttf", 13, 1);
 
     // Arquivos
-    record = fopen("resources//record.txt","r");
+    record = fopen("resources//record.txt","a");
+    rewind(record);
     fscanf(record, "%d", &high_score); //armazena conteudo do arquivo na variavel high_score
     fclose(record);
 
@@ -389,7 +390,7 @@ int main(int argc, char **argv){
         al_play_sample(coruja, 0.5, 0.0,1.0,ALLEGRO_PLAYMODE_ONCE,NULL);
         al_draw_text(pixelmix, al_map_rgb(254, 254, 254), 245, 400, 0, hermionetext);
         al_flip_display();
-        al_rest(1.5);
+        al_rest(3.0);
 
         char ronytext[100];
         sprintf(ronytext, "Voce conseguiu %d pontos!", score);
@@ -398,7 +399,7 @@ int main(int argc, char **argv){
         al_play_sample(coruja, 0.5, 0.0,1.0,ALLEGRO_PLAYMODE_ONCE,NULL);
         al_draw_text(pixelmix, al_map_rgb(254, 254, 254), 345, 468, ALLEGRO_ALIGN_CENTRE, ronytext);
         al_flip_display();
-        al_rest(1.5);
+        al_rest(3.0);
 
         char harrytext[100];
         sprintf(harrytext, "Poxa! Meu record eh %d pontos!", high_score);
@@ -407,7 +408,7 @@ int main(int argc, char **argv){
         al_play_sample(coruja, 0.5, 0.0,1.0,ALLEGRO_PLAYMODE_ONCE,NULL);
         al_draw_text(pixelmix, al_map_rgb(254, 254, 254), 415, 533, ALLEGRO_ALIGN_CENTRE, harrytext);
         al_flip_display();
-        al_rest(7.0);
+        al_rest(8.0);
     }
     else {
         al_play_sample(theme_ganhou, 0.8, 0.0,1.0,ALLEGRO_PLAYMODE_LOOP,NULL);
@@ -418,7 +419,7 @@ int main(int argc, char **argv){
         al_play_sample(coruja, 2.0, 0.0,1.0,ALLEGRO_PLAYMODE_ONCE,NULL);
         al_draw_text(pixelmix, al_map_rgb(254, 254, 254), 245, 400, 0, hermionetext);
         al_flip_display();
-        al_rest(1.5);
+        al_rest(3.0);
 
         char ronytext[100];
         sprintf(ronytext, "Voce conseguiu %d pontos!", score);
@@ -427,7 +428,7 @@ int main(int argc, char **argv){
         al_play_sample(coruja, 2.0, 0.0,1.0,ALLEGRO_PLAYMODE_ONCE,NULL);
         al_draw_text(pixelmix, al_map_rgb(254, 254, 254), 345, 468, ALLEGRO_ALIGN_CENTRE, ronytext);
         al_flip_display();
-        al_rest(1.5);
+        al_rest(3.0);
 
         char harrytext[100];
         sprintf(harrytext, "Meu record eh %d pontos!", high_score);
@@ -436,7 +437,7 @@ int main(int argc, char **argv){
         al_play_sample(coruja, 2.0, 0.0,1.0,ALLEGRO_PLAYMODE_ONCE,NULL);
         al_draw_text(pixelmix, al_map_rgb(254, 254, 254), 415, 533, ALLEGRO_ALIGN_CENTRE, harrytext);
         al_flip_display();
-        al_rest(7.0);
+        al_rest(8.0);
     }
 
     //rotinas de fim de jogo
