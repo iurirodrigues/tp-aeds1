@@ -13,11 +13,9 @@ const float FPS = 40; // numero de quadros por segundo
 const int SCREEN_W = 800;  // largura da tela
 const int SCREEN_H = 600;  // altura da tela
 
-// Função random
 int random(int min, int max) {
     return min + rand()%(max+1-min);
 }
-
 
 void moveFluffy(float *fluffy_y, int score) {
     if(score==0 && *fluffy_y < 520) {
@@ -27,6 +25,14 @@ void moveFluffy(float *fluffy_y, int score) {
         *fluffy_y -= 5;
     }
 }
+
+void verificaNotas(float *nota1, float *nota2) {
+    if(*nota2 >= *nota1 && *nota2 <= *nota1+50)
+        *nota1 = *nota1 + 50 - *nota2;
+    if(*nota1 >= *nota2 && *nota1 <= *nota2+50)
+        *nota2 = *nota2 + 50 - *nota1;
+}
+
 
 // ---------------------------------------------- Main ---------------------------------------------- //
 int main(int argc, char **argv){
@@ -115,18 +121,22 @@ int main(int argc, char **argv){
     float nota11_y = random(50, 500) * -1;
     nota12 = al_load_bitmap("resources\\images\\nota1.png");
     float nota12_y = random(60, 500) * -1;
+    verificaNotas(&nota11_y, &nota12_y);
     nota21 = al_load_bitmap("resources\\images\\nota2.png");
     float nota21_y = random(50, 500) * -1;
     nota22 = al_load_bitmap("resources\\images\\nota2.png");
     float nota22_y = random(60, 500) * -1;
+    verificaNotas(&nota21_y, &nota22_y);
     nota31 = al_load_bitmap("resources\\images\\nota3.png");
     float nota31_y = random(50, 500) * -1;
     nota32 = al_load_bitmap("resources\\images\\nota3.png");
     float nota32_y = random(60, 500) * -1;
+    verificaNotas(&nota31_y, &nota32_y);
     nota41 = al_load_bitmap("resources\\images\\nota4.png");
     float nota41_y = random(50, 500) * -1;
     nota42 = al_load_bitmap("resources\\images\\nota4.png");
     float nota42_y = random(60, 500) * -1;
+    verificaNotas(&nota41_y, &nota42_y);
     
     float nota_dy = 5.0;
 
@@ -301,11 +311,13 @@ int main(int argc, char **argv){
             }
         }
 
+        verificaNotas(&nota11_y, &nota12_y);
+        verificaNotas(&nota21_y, &nota22_y);
+        verificaNotas(&nota31_y, &nota32_y);
+        verificaNotas(&nota41_y, &nota42_y);
+
         moveFluffy(&fluffy_y, verificaScore);
         verificaScore = 2;
-
-        printf("%f", fluffy_y);
-
 
         if(ev.type == ALLEGRO_EVENT_TIMER) {
             nota11_y += nota_dy;
