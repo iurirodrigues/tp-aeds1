@@ -176,7 +176,7 @@ int main(int argc, char **argv){
 
     // JOGO --------------------------------------------------------------
     int tTimer = 0;
-    while(tTimer < 15 && score > -100) {
+    while(tTimer < 94 && score > -100) {
         al_draw_bitmap(bg_jogo, 0, 0, 0);
         al_play_sample(sample, 1.0, 0.0,1.0,ALLEGRO_PLAYMODE_ONCE,NULL);
         al_start_timer(timer);
