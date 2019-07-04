@@ -36,6 +36,8 @@ void verificaNotas(float *nota1, float *nota2) {
 
 // ---------------------------------------------- Main ---------------------------------------------- //
 int main(int argc, char **argv){
+    FILE *record;
+    int high_score ;
     int score = 0;
     srand(time(NULL));
     bool redraw = true;
@@ -145,9 +147,13 @@ int main(int argc, char **argv){
 
     // ------------------- Fontes ------------------- //
     ALLEGRO_FONT *size_32 = al_load_font("arial.ttf", 32, 1);   	
-    ALLEGRO_FONT *CentSchbkCyrill = al_load_font("resources\\CentSchbkCyrill.ttf", 50, 1); 
+    ALLEGRO_FONT *CentSchbkCyrill = al_load_font("resources\\CentSchbkCyrill.ttf", 50, 1);
 
-
+    // Arquivos
+    record = fopen("resources\\record.txt","r");
+    fscanf(record, "%d", &high_score); //armazena o conteudo do arquivo na variavel high_score
+    fclose(record);
+    printf("%d", high_score);
     //criar a fila de eventos
     event_queue = al_create_event_queue();
 
@@ -162,7 +168,7 @@ int main(int argc, char **argv){
 
     // JOGO --------------------------------------------------------------
     int tTimer = 0;
-    while(tTimer < 94 && score > -100) {
+    while(tTimer < 30 && score > -100) {
         al_draw_bitmap(bg_jogo, 0, 0, 0);
         al_play_sample(sample, 1.0, 0.0,1.0,ALLEGRO_PLAYMODE_ONCE,NULL);
         al_start_timer(timer);
@@ -353,7 +359,14 @@ int main(int argc, char **argv){
     } 
     al_destroy_sample(sample);
 
+    if(score > high_score) {
+        record = fopen("resources\\record.txt", "w"); //o arquivo eh agora aberto para escrita
+        fprintf(record, "%d", score); //escreve no arquivo o novo recorde alcançado
+        fclose(record);
+        high_score = score;
+    }
 
+    printf("\n%d", high_score);
 
     // Final
     if(score <= -100) {
@@ -362,6 +375,9 @@ int main(int argc, char **argv){
         gameover = al_load_bitmap("resources\\images\\gameover.png");
         al_draw_bitmap(gameover, 0, 0, 0);
         al_draw_text(size_32, al_map_rgb(254, 254, 254), 240, 494, 0, my_text);
+        char my_highscore[10];
+        sprintf(my_highscore, "%d", high_score);
+        al_draw_text(size_32, al_map_rgb(254, 254, 254), 240, 550, 0, my_highscore);
         al_flip_display();
         al_rest(5.0);
     }
