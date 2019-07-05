@@ -83,6 +83,7 @@ int main(int argc, char **argv){
     ALLEGRO_SAMPLE *sample = NULL;
     ALLEGRO_SAMPLE *notaSound = NULL;
 	ALLEGRO_SAMPLE_INSTANCE *som_nota = NULL;
+    ALLEGRO_SAMPLE *alohomora = NULL;
     ALLEGRO_SAMPLE *coruja = NULL;
     ALLEGRO_SAMPLE *fluffysharp = NULL;
     ALLEGRO_SAMPLE *theme_ganhou = NULL;
@@ -176,6 +177,7 @@ int main(int argc, char **argv){
     sample = al_load_sample("resources//sounds//normal.ogg");
     fluffysharp = al_load_sample("resources//sounds//fluffysharp.ogg");
     coruja = al_load_sample("resources//sounds//coruja.ogg");
+    alohomora = al_load_sample("resources//sounds//alohomora.ogg");
 
     notaSound = al_load_sample("resources//sounds//som_nota.ogg");
     som_nota = al_create_sample_instance(notaSound);
@@ -274,6 +276,8 @@ int main(int argc, char **argv){
             switch(ev.keyboard.keycode) {
                 case(ALLEGRO_KEY_ENTER):
                     al_destroy_sample(fluffysharp);
+                    al_play_sample(alohomora, 1.0, 0.0,1.0,ALLEGRO_PLAYMODE_ONCE,NULL);
+                    al_rest(1.0);
                     enter = 1;
             }
         }
