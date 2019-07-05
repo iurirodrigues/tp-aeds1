@@ -37,8 +37,10 @@ void verificaNotas(float *nota1, float *nota2) {
 // ---------------------------------------------- Main ---------------------------------------------- //
 int main(int argc, char **argv){
     FILE *record;
-    int high_score = 0;
+    int high_score;
     int score = 0;
+    int enter = 0;
+    int tTimer = 0;
     srand(time(NULL));
     bool redraw = true;
 
@@ -48,7 +50,18 @@ int main(int argc, char **argv){
     ALLEGRO_EVENT_QUEUE *event_queue = NULL;
     ALLEGRO_TIMER *timer = NULL;
 
-    // Imagens do Jogos 
+    // Imagens do Jogo
+    ALLEGRO_BITMAP *frame1 = NULL;
+    ALLEGRO_BITMAP *frame2 = NULL;
+    ALLEGRO_BITMAP *frame3 = NULL;
+    ALLEGRO_BITMAP *frame4 = NULL;
+    ALLEGRO_BITMAP *frame5 = NULL;
+    ALLEGRO_BITMAP *frame6 = NULL;
+    ALLEGRO_BITMAP *frame7 = NULL;
+    ALLEGRO_BITMAP *frame8 = NULL;
+    ALLEGRO_BITMAP *frame9 = NULL;
+    ALLEGRO_BITMAP *frame10 = NULL;
+    ALLEGRO_BITMAP *frame11 = NULL;
     ALLEGRO_BITMAP *fluffy = NULL;
     ALLEGRO_BITMAP *bg_jogo = NULL;
     ALLEGRO_BITMAP *bg_gameover = NULL;
@@ -108,7 +121,7 @@ int main(int argc, char **argv){
         return -1;
     }
     
-    if (!al_reserve_samples(2)){
+    if (!al_reserve_samples(10)){
         fprintf(stderr, "failed to reserve samples!\n");
         return -1;
     }
@@ -121,6 +134,17 @@ int main(int argc, char **argv){
     al_init_ttf_addon();
 
     // ------------------- Bitmaps ------------------- //
+    frame1 = al_load_bitmap("resources//images//intro//frame1.png");
+    frame2 = al_load_bitmap("resources//images//intro//frame2.png");
+    frame3 = al_load_bitmap("resources//images//intro//frame3.png");
+    frame4 = al_load_bitmap("resources//images//intro//frame4.png");
+    frame5 = al_load_bitmap("resources//images//intro//frame5.png");
+    frame6 = al_load_bitmap("resources//images//intro//frame6.png");
+    frame7 = al_load_bitmap("resources//images//intro//frame7.png");
+    frame8 = al_load_bitmap("resources//images//intro//frame8.png");
+    frame9 = al_load_bitmap("resources//images//intro//frame9.png");
+    frame10 = al_load_bitmap("resources//images//intro//frame11.png");
+    
     bg_jogo = al_load_bitmap("resources//images//bg_jogo.png");
     fluffy = al_load_bitmap("resources//images//fluffy.png");
     float fluffy_y = 380;
@@ -151,15 +175,15 @@ int main(int argc, char **argv){
 
     // ------------------- Sons ------------------- //
     sample = al_load_sample("resources//sounds//normal.ogg");
-    som_nota = al_load_sample("resources//sounds//som_nota.ogg");
+    fluffysharp = al_load_sample("resources//sounds//fluffysharp.ogg");
+    coruja = al_load_sample("resources//sounds//coruja.ogg");
 
     // ------------------- Fontes ------------------- //
     ALLEGRO_FONT *CentSchbkCyrill = al_load_font("resources//CentSchbkCyrill.ttf", 50, 1);
     ALLEGRO_FONT *pixelmix= al_load_font("resources//pixelmix.ttf", 13, 1);
 
     // Arquivos
-    record = fopen("resources//record.txt","a");
-    rewind(record);
+    record = fopen("resources//record.txt","r");
     fscanf(record, "%d", &high_score); //armazena conteudo do arquivo na variavel high_score
     fclose(record);
 
@@ -175,17 +199,100 @@ int main(int argc, char **argv){
     // teclado
     al_register_event_source(event_queue, al_get_keyboard_event_source());
 
+    // ABERTURA -----------------------------------------------------------
+    al_play_sample(fluffysharp, 1.0, 0.0,1.0,ALLEGRO_PLAYMODE_LOOP,NULL);
+    
+    al_draw_bitmap(frame1, 0, 0, 0);
+    al_flip_display();
+    al_rest(6.0);
+
+    al_draw_bitmap(frame2, 0, 0, 0);
+    al_play_sample(coruja, 0.5, 0.0,1.0,ALLEGRO_PLAYMODE_ONCE,NULL);
+    al_flip_display();
+    al_rest(3.0);
+
+    al_draw_bitmap(frame3, 0, 0, 0);
+    al_play_sample(coruja, 0.5, 0.0,1.0,ALLEGRO_PLAYMODE_ONCE,NULL);
+    al_flip_display();
+    al_rest(3.0);
+
+    al_draw_bitmap(frame4, 0, 0, 0);
+    al_play_sample(coruja, 0.5, 0.0,1.0,ALLEGRO_PLAYMODE_ONCE,NULL);
+    al_flip_display();
+    al_rest(3.0);
+
+    al_play_sample(coruja, 0.5, 0.0,1.0,ALLEGRO_PLAYMODE_ONCE,NULL);
+    while(enter==0) {
+        al_draw_bitmap(frame5, 0, 0, 0);
+        al_flip_display();
+
+        ALLEGRO_EVENT ev;
+        al_wait_for_event(event_queue, &ev);
+        if(ev.type == ALLEGRO_EVENT_KEY_DOWN) { 
+            switch(ev.keyboard.keycode) {
+                case(ALLEGRO_KEY_ENTER):
+                enter = 1;
+            }
+        }
+    }
+
+    al_draw_bitmap(frame6, 0, 0, 0);
+    al_play_sample(coruja, 0.5, 0.0,1.0,ALLEGRO_PLAYMODE_ONCE,NULL);
+    al_flip_display();
+    al_rest(3.0);
+
+    al_draw_bitmap(frame7, 0, 0, 0);
+    al_play_sample(coruja, 0.5, 0.0,1.0,ALLEGRO_PLAYMODE_ONCE,NULL);
+    al_flip_display();
+    al_rest(3.0);
+
+    al_draw_bitmap(frame8, 0, 0, 0);
+    al_play_sample(coruja, 0.5, 0.0,1.0,ALLEGRO_PLAYMODE_ONCE,NULL);
+    al_flip_display();
+    al_rest(3.0);
+
+
+    al_play_sample(coruja, 0.5, 0.0,1.0,ALLEGRO_PLAYMODE_ONCE,NULL);
+    while(enter==1) {
+        al_draw_bitmap(frame9, 0, 0, 0);
+        al_flip_display();
+
+        ALLEGRO_EVENT ev;
+        al_wait_for_event(event_queue, &ev);
+        if(ev.type == ALLEGRO_EVENT_KEY_DOWN) { 
+            switch(ev.keyboard.keycode) {
+                case(ALLEGRO_KEY_ENTER):
+                enter = 0;
+            }
+        }      
+    }
+
+    while(enter==0) {
+        al_draw_bitmap(frame11, 0, 0, 0);
+        al_flip_display();
+
+        ALLEGRO_EVENT ev;
+        al_wait_for_event(event_queue, &ev);
+        if(ev.type == ALLEGRO_EVENT_KEY_DOWN) { 
+            switch(ev.keyboard.keycode) {
+                case(ALLEGRO_KEY_ENTER):
+                    al_destroy_sample(fluffysharp);
+                    enter = 1;
+            }
+        }
+    }
+
+    al_play_sample(sample, 1.0, 0.0,1.0,ALLEGRO_PLAYMODE_LOOP,NULL);
     // JOGO --------------------------------------------------------------
-    int tTimer = 0;
     while(tTimer < 94 && score > -100) {
         al_draw_bitmap(bg_jogo, 0, 0, 0);
-        al_play_sample(sample, 1.0, 0.0,1.0,ALLEGRO_PLAYMODE_ONCE,NULL);
         al_start_timer(timer);
         tTimer = al_get_timer_count(timer)/(int)FPS;
         ALLEGRO_EVENT ev;
         al_wait_for_event(event_queue, &ev);
         int verificaScore;
-        
+        som_nota = al_load_sample("resources//sounds//som_nota.ogg");
+
         // Perca de pontos caso ultrapasse a area crítica
         if(nota11_y > 600) {
             nota11_y = notasAleatorias(50, 500) * -1;
@@ -246,7 +353,7 @@ int main(int argc, char **argv){
                         verificaScore = 1;
                     }
                     else if(nota12_y >= 500 && nota12_y <= 600) {
-                        printf("\a");
+                        printf("\a");  
                         nota12_y = notasAleatorias(50, 500) * -1;
                         score += 5;
                         verificaScore = 1;
@@ -376,8 +483,8 @@ int main(int argc, char **argv){
     }
 
     coruja = al_load_sample("resources//sounds//coruja.ogg");
-    fluffysharp = al_load_sample("resources//sounds//fluffysharp.ogg");
     theme_ganhou = al_load_sample("resources//sounds//ganhou.ogg");
+    fluffysharp = al_load_sample("resources//sounds//fluffysharp.ogg");
     
 
     // Final
@@ -408,7 +515,7 @@ int main(int argc, char **argv){
         al_play_sample(coruja, 0.5, 0.0,1.0,ALLEGRO_PLAYMODE_ONCE,NULL);
         al_draw_text(pixelmix, al_map_rgb(254, 254, 254), 415, 533, ALLEGRO_ALIGN_CENTRE, harrytext);
         al_flip_display();
-        al_rest(8.0);
+        al_rest(10.0);
     }
     else {
         al_play_sample(theme_ganhou, 0.8, 0.0,1.0,ALLEGRO_PLAYMODE_LOOP,NULL);
@@ -437,7 +544,7 @@ int main(int argc, char **argv){
         al_play_sample(coruja, 2.0, 0.0,1.0,ALLEGRO_PLAYMODE_ONCE,NULL);
         al_draw_text(pixelmix, al_map_rgb(254, 254, 254), 415, 533, ALLEGRO_ALIGN_CENTRE, harrytext);
         al_flip_display();
-        al_rest(8.0);
+        al_rest(10.0);
     }
 
     //rotinas de fim de jogo
