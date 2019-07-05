@@ -82,7 +82,8 @@ int main(int argc, char **argv){
 
     // Sons
     ALLEGRO_SAMPLE *sample = NULL;
-    ALLEGRO_SAMPLE *som_nota = NULL;
+    ALLEGRO_SAMPLE *notaSound = NULL;
+	ALLEGRO_SAMPLE_INSTANCE *som_nota = NULL;
     ALLEGRO_SAMPLE *coruja = NULL;
     ALLEGRO_SAMPLE *fluffysharp = NULL;
     ALLEGRO_SAMPLE *theme_ganhou = NULL;
@@ -177,6 +178,11 @@ int main(int argc, char **argv){
     sample = al_load_sample("resources//sounds//normal.ogg");
     fluffysharp = al_load_sample("resources//sounds//fluffysharp.ogg");
     coruja = al_load_sample("resources//sounds//coruja.ogg");
+
+    notaSound = al_load_sample("resources//sounds//som_nota.ogg");
+    som_nota = al_create_sample_instance(notaSound);
+    al_set_sample_instance_playmode(som_nota, ALLEGRO_PLAYMODE_ONCE);
+    al_attach_sample_instance_to_mixer(som_nota, al_get_default_mixer());
 
     // ------------------- Fontes ------------------- //
     ALLEGRO_FONT *CentSchbkCyrill = al_load_font("resources//CentSchbkCyrill.ttf", 50, 1);
@@ -291,7 +297,6 @@ int main(int argc, char **argv){
         ALLEGRO_EVENT ev;
         al_wait_for_event(event_queue, &ev);
         int verificaScore;
-        som_nota = al_load_sample("resources//sounds//som_nota.ogg");
 
         // Perca de pontos caso ultrapasse a area crítica
         if(nota11_y > 600) {
@@ -347,13 +352,15 @@ int main(int argc, char **argv){
             switch(ev.keyboard.keycode){
                 case ALLEGRO_KEY_Q:
                     if(nota11_y >= 500 && nota11_y <= 600) {
-                        printf("\a");
+                        al_stop_sample_instance(som_nota);
+                        al_play_sample_instance(som_nota);
                         nota11_y = notasAleatorias(50, 500) * -1;
                         score += 5;      
                         verificaScore = 1;
                     }
                     else if(nota12_y >= 500 && nota12_y <= 600) {
-                        printf("\a");  
+                        al_stop_sample_instance(som_nota);
+                        al_play_sample_instance(som_nota);
                         nota12_y = notasAleatorias(50, 500) * -1;
                         score += 5;
                         verificaScore = 1;
@@ -367,14 +374,16 @@ int main(int argc, char **argv){
 
                 case ALLEGRO_KEY_W:
                     if(nota21_y >= 500 && nota21_y <= 600) {
-                        printf("\a");
+                        al_stop_sample_instance(som_nota);
+                        al_play_sample_instance(som_nota);
                         nota21_y = notasAleatorias(50, 500) * -1;
                         score += 5;
                         verificaScore = 1;
 
                     }
                     else if(nota22_y >= 500 && nota22_y <= 600) {
-                        printf("\a");
+                        al_stop_sample_instance(som_nota);
+                        al_play_sample_instance(som_nota);
                         nota22_y = notasAleatorias(50, 500) * -1;
                         score += 5;
                         verificaScore = 1;
@@ -389,14 +398,16 @@ int main(int argc, char **argv){
 
                 case ALLEGRO_KEY_O:
                     if(nota31_y >= 500 && nota31_y <= 600) {
-                        printf("\a");
+                        al_stop_sample_instance(som_nota);
+                        al_play_sample_instance(som_nota);
                         nota31_y = notasAleatorias(50, 500) * -1;
                         score += 5;
                         verificaScore = 1;
 
                     }
                     else if(nota32_y >= 500 && nota32_y <= 600) {
-                        printf("\a");
+                        al_stop_sample_instance(som_nota);
+                        al_play_sample_instance(som_nota);
                         nota32_y = notasAleatorias(50, 500) * -1;
                         score += 5;
                         verificaScore = 1;
@@ -411,14 +422,16 @@ int main(int argc, char **argv){
 
                 case ALLEGRO_KEY_P:    
                     if(nota41_y >= 500 && nota41_y <= 600) {
-                        printf("\a");
+                        al_stop_sample_instance(som_nota);
+                        al_play_sample_instance(som_nota);
                         nota41_y = notasAleatorias(50, 500) * -1;
                         score += 5;
                         verificaScore = 1;
 
                     }
                     else if(nota42_y >= 500 && nota42_y <= 600) {
-                        printf("\a");
+                        al_stop_sample_instance(som_nota);
+                        al_play_sample_instance(som_nota);
                         nota42_y = notasAleatorias(50, 500) * -1;
                         score += 5;
                         verificaScore = 1;
