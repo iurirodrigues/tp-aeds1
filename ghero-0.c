@@ -268,7 +268,7 @@ int main(int argc, char **argv){
     }
 
     while(enter==0) {
-        al_draw_bitmap(frame11, 0, 0, 0);
+        al_draw_bitmap(frame10, 0, 0, 0);
         al_flip_display();
 
         ALLEGRO_EVENT ev;
