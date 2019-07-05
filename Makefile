@@ -7,16 +7,16 @@ PATH_ALLEGRO=$(FOLDER)$(FOLDER_NAME)
 LIB_ALLEGRO=\lib\liballegro-$(ALLEGRO_VERSION)-monolith-mt.a
 INCLUDE_ALLEGRO=\include
 
-all: ghero-0.exe
+all: fluffysharp.exe
 	
-ghero-0.exe: ghero-0.o
-	gcc -o ghero-0.exe ghero-0.o $(PATH_ALLEGRO)$(LIB_ALLEGRO) -Wl,--subsystem,windows 
+fluffysharp.exe: fluffysharp.o
+	gcc -o fluffysharp.exe fluffysharp.o $(PATH_ALLEGRO)$(LIB_ALLEGRO) -Wl,--subsystem,windows 
 
-ghero-0.o: ghero-0.c
-	gcc -I $(PATH_ALLEGRO)$(INCLUDE_ALLEGRO) -c ghero-0.c -Wl,--subsystem,windows 
+fluffysharp.o: fluffysharp.c
+	gcc -I $(PATH_ALLEGRO)$(INCLUDE_ALLEGRO) -c fluffysharp.c -Wl,--subsystem,windows 
 	
  
 clean:
-	del ghero-0.o
-	del ghero-0.exe
+	del fluffysharp.o
+	del fluffysharp.exe
 

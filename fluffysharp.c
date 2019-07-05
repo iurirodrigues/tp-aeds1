@@ -69,7 +69,6 @@ int main(int argc, char **argv){
     ALLEGRO_BITMAP *harry = NULL;
     ALLEGRO_BITMAP *rony = NULL;
 
-
     // Notas musicais
     ALLEGRO_BITMAP *nota11 = NULL;
     ALLEGRO_BITMAP *nota12 = NULL;
@@ -145,9 +144,9 @@ int main(int argc, char **argv){
     frame8 = al_load_bitmap("resources//images//intro//frame8.png");
     frame9 = al_load_bitmap("resources//images//intro//frame9.png");
     frame10 = al_load_bitmap("resources//images//intro//frame11.png");
-    
     bg_jogo = al_load_bitmap("resources//images//bg_jogo.png");
     fluffy = al_load_bitmap("resources//images//fluffy.png");
+    
     float fluffy_y = 380;
 
     // Notas
@@ -171,7 +170,6 @@ int main(int argc, char **argv){
     nota42 = al_load_bitmap("resources//images//nota4.png");
     float nota42_y = notasAleatorias(60, 500) * -1;
     verificaNotas(&nota41_y, &nota42_y);
-    
     float nota_dy = 5.0;
 
     // ------------------- Sons ------------------- //
@@ -193,16 +191,9 @@ int main(int argc, char **argv){
     fscanf(record, "%d", &high_score); //armazena conteudo do arquivo na variavel high_score
     fclose(record);
 
-    //criar a fila de events
     event_queue = al_create_event_queue();
-
-    //registrar mudancas na tela dentro da fila de eventos, isto e, sempre que a tela mudar, um evento ocorrerah
     al_register_event_source(event_queue, al_get_display_event_source(display));
-
-    //coloca o timer na fila de eventos, isto e, sempre que o tempo passar, um evento eh gerado
-    al_register_event_source(event_queue, al_get_timer_event_source(timer));
-    
-    // teclado
+    al_register_event_source(event_queue, al_get_timer_event_source(timer));  
     al_register_event_source(event_queue, al_get_keyboard_event_source());
 
     // ABERTURA -----------------------------------------------------------
@@ -210,22 +201,22 @@ int main(int argc, char **argv){
     
     al_draw_bitmap(frame1, 0, 0, 0);
     al_flip_display();
-    al_rest(6.0);
+    al_rest(5.0);
 
     al_draw_bitmap(frame2, 0, 0, 0);
     al_play_sample(coruja, 0.5, 0.0,1.0,ALLEGRO_PLAYMODE_ONCE,NULL);
     al_flip_display();
-    al_rest(3.0);
+    al_rest(2.0);
 
     al_draw_bitmap(frame3, 0, 0, 0);
     al_play_sample(coruja, 0.5, 0.0,1.0,ALLEGRO_PLAYMODE_ONCE,NULL);
     al_flip_display();
-    al_rest(3.0);
+    al_rest(2.0);
 
     al_draw_bitmap(frame4, 0, 0, 0);
     al_play_sample(coruja, 0.5, 0.0,1.0,ALLEGRO_PLAYMODE_ONCE,NULL);
     al_flip_display();
-    al_rest(3.0);
+    al_rest(2.0);
 
     al_play_sample(coruja, 0.5, 0.0,1.0,ALLEGRO_PLAYMODE_ONCE,NULL);
     while(enter==0) {
@@ -245,17 +236,17 @@ int main(int argc, char **argv){
     al_draw_bitmap(frame6, 0, 0, 0);
     al_play_sample(coruja, 0.5, 0.0,1.0,ALLEGRO_PLAYMODE_ONCE,NULL);
     al_flip_display();
-    al_rest(3.0);
+    al_rest(2.0);
 
     al_draw_bitmap(frame7, 0, 0, 0);
     al_play_sample(coruja, 0.5, 0.0,1.0,ALLEGRO_PLAYMODE_ONCE,NULL);
     al_flip_display();
-    al_rest(3.0);
+    al_rest(2.0);
 
     al_draw_bitmap(frame8, 0, 0, 0);
     al_play_sample(coruja, 0.5, 0.0,1.0,ALLEGRO_PLAYMODE_ONCE,NULL);
     al_flip_display();
-    al_rest(3.0);
+    al_rest(2.0);
 
 
     al_play_sample(coruja, 0.5, 0.0,1.0,ALLEGRO_PLAYMODE_ONCE,NULL);
@@ -298,7 +289,7 @@ int main(int argc, char **argv){
         al_wait_for_event(event_queue, &ev);
         int verificaScore;
 
-        // Perca de pontos caso ultrapasse a area crítica
+        // Perda de pontos caso ultrapasse a area crítica
         if(nota11_y > 600) {
             nota11_y = notasAleatorias(50, 500) * -1;
             score -= 10;
@@ -347,7 +338,6 @@ int main(int argc, char **argv){
 
         }
 
-        // 
         if(ev.type == ALLEGRO_EVENT_KEY_DOWN){
             switch(ev.keyboard.keycode){
                 case ALLEGRO_KEY_Q:
@@ -498,7 +488,6 @@ int main(int argc, char **argv){
     coruja = al_load_sample("resources//sounds//coruja.ogg");
     theme_ganhou = al_load_sample("resources//sounds//ganhou.ogg");
     fluffysharp = al_load_sample("resources//sounds//fluffysharp.ogg");
-    
 
     // Final
     if(score <= -100) {
